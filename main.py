@@ -1,14 +1,17 @@
 import pygame
+import random
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGTH = 600
+current_time = pygame.time.get_ticks()
 clock = pygame.time.Clock()
 
 
 class tela_branca1(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('./assets/tela branca.png').convert_alpha()
+        self.image = pygame.image.load(
+            './assets/tela branca.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.rect[0] = 45
         self.rect[1] = SCREEN_HEIGTH - 595
@@ -17,7 +20,8 @@ class tela_branca1(pygame.sprite.Sprite):
 class tela_branca2(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('./assets/tela branca.png').convert_alpha()
+        self.image = pygame.image.load(
+            './assets/tela branca.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.rect[0] = 82
         self.rect[1] = SCREEN_HEIGTH - 595
@@ -29,7 +33,7 @@ class nave_fim(pygame.sprite.Sprite):
         self.image = pygame.image.load('./assets/parabens.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.rect[0] = SCREEN_WIDTH / 9
-        self.rect[1] = SCREEN_HEIGTH /7
+        self.rect[1] = SCREEN_HEIGTH / 7
 
 
 class tela_fim(pygame.sprite.Sprite):
@@ -41,13 +45,13 @@ class tela_fim(pygame.sprite.Sprite):
         self.rect[1] = 0
 
 
-#class tela_perdeu(pygame.sprite.Sprite):
-    #def __init__(self):
-        #pygame.sprite.Sprite.__init__(self)
-        #self.image = pygame.image.load('./assets/').convert_alpha()
-        #self.rect = self.image.get_rect()
-        #self.rect[0] = 0
-        #self.rect[1] = 0
+# class tela_perdeu(pygame.sprite.Sprite):
+    # def __init__(self):
+        # pygame.sprite.Sprite.__init__(self)
+        # self.image = pygame.image.load('./assets/').convert_alpha()
+        # self.rect = self.image.get_rect()
+        # self.rect[0] = 0
+        # self.rect[1] = 0
 
 
 class vida(pygame.sprite.Sprite):
@@ -91,11 +95,14 @@ class Nave(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.images = [pygame.image.load('./assets/NaveCima1.png').convert_alpha(),
-                       pygame.image.load('./assets/NaveCima2.png').convert_alpha(),
-                       pygame.image.load('./assets/NaveCima3.png').convert_alpha(),
+                       pygame.image.load(
+                           './assets/NaveCima2.png').convert_alpha(),
+                       pygame.image.load(
+                           './assets/NaveCima3.png').convert_alpha(),
                        pygame.image.load('./assets/NaveCima4.png').convert_alpha()]
         self.current_image = 0
-        self.image = pygame.image.load('./assets/NaveCima1.png').convert_alpha()
+        self.image = pygame.image.load(
+            './assets/NaveCima1.png').convert_alpha()
         self.rect = self.image.get_rect()
 
         self.rect[0] = SCREEN_WIDTH / 2
@@ -114,13 +121,13 @@ class Nave(pygame.sprite.Sprite):
 
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LEFT]:
-            self.speed_x = -3
+            self.speed_x = -8
         if keystate[pygame.K_RIGHT]:
-            self.speed_x = 3
+            self.speed_x = 8
         if keystate[pygame.K_UP]:
-            self.speed_y = -3
+            self.speed_y = -8
         if keystate[pygame.K_DOWN]:
-            self.speed_y = 3
+            self.speed_y = 8
 
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
@@ -182,7 +189,6 @@ class Nave(pygame.sprite.Sprite):
             palavra += 'E',
             print(palavra)
 
-
             print(palavra)
 
         if pygame.sprite.groupcollide(nave_group, letra_g_group, False, True):
@@ -194,6 +200,12 @@ class Nave(pygame.sprite.Sprite):
         if pygame.sprite.groupcollide(nave_group, letra_n_group, False, True):
             self.vida -= 1
 
+        if pygame.sprite.groupcollide(nave_group, lifeUp_group, False, True):
+            if self.vida <= 2:
+                lifeUp = LifeUp(random.randint(0, SCREEN_WIDTH),
+                                random.randint(0, SCREEN_WIDTH))
+                lifeUp_group.add(lifeUp)
+                self.vida += 1
 
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
@@ -209,7 +221,8 @@ class Asteroide(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load('./assets/Asteroides.png').convert_alpha()
+        self.image = pygame.image.load(
+            './assets/Asteroides.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.rect[0] = 110
         self.rect[1] = SCREEN_HEIGTH - 300
@@ -335,6 +348,32 @@ class LetraN(pygame.sprite.Sprite):
         self.rect[1] = SCREEN_HEIGTH - 380
 
 
+class LifeUp(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('./assets/vida.png').convert_alpha()
+        self.rect = self.image.get_rect()
+        self.X = x
+        self.Y = y
+        self.rect[0] = self.X
+        self.rect[1] = SCREEN_HEIGTH - self.Y
+        self.endShowing = current_time + 5 * 1000
+        self.startShowing = current_time
+        self.isOn = True
+
+class LETRA(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('./assets/vida.png').convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect[0] = self.X
+        self.rect[1] = SCREEN_HEIGTH - self.Y
+        self.endShowing = current_time + 5 * 1000
+        self.startShowing = current_time
+        self.isOn = True
+
+
+
 pygame.init()
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH))
@@ -434,6 +473,12 @@ tela_branca2 = tela_branca2()
 tela_branca2_group.add(tela_branca2)
 
 
+lifeUp_group = pygame.sprite.Group()
+lifeUp = LifeUp(random.randint(0, SCREEN_WIDTH),
+                random.randint(0, SCREEN_WIDTH))
+lifeUp_group.add(lifeUp)
+
+
 def draw():
     nave_group.draw(screen)
     aster_group.draw(screen)
@@ -450,6 +495,9 @@ def draw():
     letra_i_group.draw(screen)
     letra_n_group.draw(screen)
     caderno_group.draw(screen)
+
+    if(lifeUp.isOn):
+        lifeUp_group.draw(screen)
 
 
 def update():
@@ -476,8 +524,12 @@ def update():
     tela_branca1_group.update()
     tela_branca2_group.update()
 
+    if(lifeUp.isOn):
+        lifeUp_group.update()
+
 
 while True:
+    current_time = pygame.time.get_ticks()
     screen.blit(BACKGROUND, (0, 0))
     clock.tick(60)
 
@@ -485,12 +537,34 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
 
+        # - updates -
+
+    current_time = pygame.time.get_ticks()
+
+    if lifeUp.isOn:
+        # is it time to hide ?
+        if lifeUp.endShowing and current_time >= lifeUp.endShowing:
+            lifeUp_group.remove(lifeUp)
+            lifeUp = LifeUp(random.randint(0, SCREEN_WIDTH),
+                            random.randint(0, SCREEN_WIDTH))
+            lifeUp_group.add(lifeUp)
+            # hide it
+            lifeUp.isOn = False
+            lifeUp.endShowing = False
+            # set time when to show
+            lifeUp.startShowing = current_time + random.randint(1, 5)*1000
+
+    else:
+        # is it time to show ?
+        if lifeUp.startShowing and current_time >= lifeUp.startShowing:
+            # show it
+            lifeUp.isOn = True
+            lifeUp.startShowing = False
+            # set time when to hide
+            lifeUp.endShowing = current_time + random.randint(1, 5)*1000
+
+    # - draws -
+
     draw()
     update()
     pygame.display.update()
-
-
-
-
-
-
