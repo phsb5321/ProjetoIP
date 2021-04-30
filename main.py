@@ -170,12 +170,15 @@ class Nave(pygame.sprite.Sprite):
             m.isON = True
             letra_group.remove(m)
             letra_group.add(m)
+
             self.score += 1
             palavra += 'M',
             print(palavra)
+
         if pygame.sprite.groupcollide(nave_group, letra_a_group, False, True):
-            #COPIE DAQUI 
-            a = LETRA("A", 200, True)
+
+            # COPIE DAQUI
+            a = LETRA("A", 280, True)
             a.isON = True
             letra_group.remove(a)
             letra_group.add(a)
@@ -186,16 +189,31 @@ class Nave(pygame.sprite.Sprite):
             print(palavra)
 
         if pygame.sprite.groupcollide(nave_group, letra_r_group, False, True):
+            r = LETRA("R", 360, True)
+            r.isON = True
+            letra_group.remove(r)
+            letra_group.add(r)
+            
             self.score += 1
             palavra += 'R',
             print(palavra)
 
         if pygame.sprite.groupcollide(nave_group, letra_t_group, False, True):
+            t = LETRA("T", 440, True)
+            t.isON = True
+            letra_group.remove(t)
+            letra_group.add(t)
+
             self.score += 1
             palavra += 'T',
             print(palavra)
 
         if pygame.sprite.groupcollide(nave_group, letra_e_group, False, True):
+            e = LETRA("E", 520, True)
+            e.isON = True
+            letra_group.remove(e)
+            letra_group.add(e)
+
             self.score += 1
             palavra += 'E',
             print(palavra)
