@@ -166,10 +166,21 @@ class Nave(pygame.sprite.Sprite):
 
         palavra = ()
         if pygame.sprite.groupcollide(nave_group, letra_m_group, False, True):
+            m = LETRA("M", 200, True)
+            m.isON = True
+            letra_group.remove(m)
+            letra_group.add(m)
             self.score += 1
             palavra += 'M',
             print(palavra)
         if pygame.sprite.groupcollide(nave_group, letra_a_group, False, True):
+            #COPIE DAQUI 
+            a = LETRA("A", 200, True)
+            a.isON = True
+            letra_group.remove(a)
+            letra_group.add(a)
+            # ATÉ AQUI
+
             self.score += 1
             palavra += 'A',
             print(palavra)
@@ -361,17 +372,21 @@ class LifeUp(pygame.sprite.Sprite):
         self.startShowing = current_time
         self.isOn = True
 
-class LETRA(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('./assets/vida.png').convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect[0] = self.X
-        self.rect[1] = SCREEN_HEIGTH - self.Y
-        self.endShowing = current_time + 5 * 1000
-        self.startShowing = current_time
-        self.isOn = True
 
+class LETRA(pygame.sprite.Sprite):
+    def __init__(self, name, x, on):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.isON = on
+        self.truePath = f'./assets/{name}_True.png'
+        self.falsePath = f'./assets/{name}_False.png'
+
+        self.currentPath = self.truePath if self.isON else self.falsePath
+
+        self.image = pygame.image.load(self.currentPath).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect[0] = x
+        self.rect[1] = 20
 
 
 pygame.init()
@@ -479,6 +494,19 @@ lifeUp = LifeUp(random.randint(0, SCREEN_WIDTH),
 lifeUp_group.add(lifeUp)
 
 
+letra_group = pygame.sprite.Group()
+m = LETRA("M", 200, False)
+a = LETRA("A", 280, False)
+r = LETRA("R", 360, False)
+t = LETRA("T", 440, False)
+e = LETRA("E", 520, False)
+
+letter_list = [m, a, r, t, e]
+
+for x in letter_list:
+    letra_group.add(x)
+
+
 def draw():
     nave_group.draw(screen)
     aster_group.draw(screen)
@@ -495,6 +523,7 @@ def draw():
     letra_i_group.draw(screen)
     letra_n_group.draw(screen)
     caderno_group.draw(screen)
+    letra_group.draw(screen)
 
     if(lifeUp.isOn):
         lifeUp_group.draw(screen)
@@ -523,6 +552,7 @@ def update():
     tela_fim_group.update()
     tela_branca1_group.update()
     tela_branca2_group.update()
+    letra_group.update(screen)
 
     if(lifeUp.isOn):
         lifeUp_group.update()
